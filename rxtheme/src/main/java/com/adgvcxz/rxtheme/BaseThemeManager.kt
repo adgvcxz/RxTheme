@@ -11,7 +11,7 @@ import io.reactivex.subjects.Subject
  * Created by zhaowei on 2017/7/10.
  */
 
-class BaseThemeManager<T : BaseTheme>(initTheme: T) {
+open class BaseThemeManager<T : BaseTheme>(initTheme: T) {
 
     var theme: T = initTheme
         set(value) {
