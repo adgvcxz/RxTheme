@@ -2,11 +2,14 @@ package com.adgvcxz.rxtheme
 
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SwitchCompat
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.ScrollView
 import android.widget.TextView
 import com.adgvcxz.rxtheme.extensions.setAccentColor
+import com.adgvcxz.rxtheme.extensions.setEdgeGlowColor
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
@@ -38,7 +41,6 @@ open class BaseThemeManager<T : BaseTheme>(initTheme: T) {
 
     fun accentColor(vararg views: View): Disposable {
         return manager.map { it.accentColor }
-                .distinctUntilChanged()
                 .toThemeObservable(views)
                 .subscribe {
                     it.first.forEach { view ->
@@ -50,6 +52,28 @@ open class BaseThemeManager<T : BaseTheme>(initTheme: T) {
                             is SwitchCompat -> view.setAccentColor(it.second)
                         }
                     }
+                }
+    }
+
+    fun primaryColor(vararg views: View): Disposable {
+        return manager.map { it.colorPrimary }
+                .toThemeObservable(views)
+                .subscribe {
+                    it.first.forEach { view ->
+                        when(view) {
+                            is RecyclerView -> view.post { view.setEdgeGlowColor(it.second) }
+                            is ScrollView -> view.setEdgeGlowColor(it.second)
+                            else -> view.setBackgroundColor(it.second)
+                        }
+                    }
+                }
+    }
+
+    fun primaryTextColor(vararg views: TextView): Disposable {
+        return manager.map { it.primaryTextColor }
+                .distinctUntilChanged()
+                .subscribe {
+                    views.forEach { view -> view.setTextColor(it) }
                 }
     }
 }
