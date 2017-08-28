@@ -1,6 +1,7 @@
 package com.adgvcxz.rxtheme
 
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.view.ViewPager
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SwitchCompat
@@ -9,7 +10,7 @@ import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import com.adgvcxz.rxtheme.extensions.setAccentColor
-import com.adgvcxz.rxtheme.extensions.setEdgeGlowColor
+import com.adgvcxz.rxtheme.extensions.setPrimaryColor
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
@@ -61,8 +62,9 @@ open class BaseThemeManager<T : BaseTheme>(initTheme: T) {
                 .subscribe {
                     it.first.forEach { view ->
                         when(view) {
-                            is RecyclerView -> view.post { view.setEdgeGlowColor(it.second) }
-                            is ScrollView -> view.setEdgeGlowColor(it.second)
+                            is ViewPager -> view.post { view.setPrimaryColor(it.second) }
+                            is RecyclerView -> view.post { view.setPrimaryColor(it.second) }
+                            is ScrollView -> view.setPrimaryColor(it.second)
                             else -> view.setBackgroundColor(it.second)
                         }
                     }
